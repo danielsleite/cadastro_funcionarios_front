@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Cadastro</title>
+</head>
+
+<body>
+    <!-- Cabeçalho de informações do sistema -->
+    <header>
+        <div class="title"  style="padding-top: 0.5% display">
+            <h2>Sistema XPTO: Empresa X</h2>
+        </div>
+
+        <div class="title" style="padding-bottom: 0.5%">
+            <div style="padding-top: 0.5%">
+                <input type="text" id="campo_login" placeholder="login" required>
+                <input type="password" id="campo_senha" placeholder="senha" required>
+                <!-- <button type="submit" onclick=realizaLogin() class="addBtn">Login</button> -->
+                <button onclick="realiza_login()" class="addBtn">Login</button>
+                <button id="btlogout" style="display: none" onclick="realiza_logout()" class="addBtn">Logout</button>
+            </div>
+            <div id="div_reset_senha" style="display: none">
+                <input type="password" id="campo_nova_senha_1" placeholder="nova senha" required>
+                <input type="password" id="campo_nova_senha_2" placeholder="nova senha" required>
+                <button id="btResetSenha" onclick="altera_senha()" class="addBtn">Alterar</button>
+            </div>
+        </div>
+    </header>
+    <div  style="display: none" id="titCentral" >
+        <h1 style="padding-top: 2%" >Cadastro de Funcionário</h1>
+    </div>
+
+    <div class="container">
+        <div class="formulario_left" id="ficha"  style="display: none">
+            <!-- <form class="formulario" id="ficha" style="display: none;"> -->
+            <h2 class="form-group">
+                Ficha de cadastro
+            </h2>
+            <div class="form-group">
+                <label for="nome">Nome completo</label>
+                <input type="text" id="campo_nome" name="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="cpf">CPF</label>
+                <input type="text" id="campo_cpf" name="cpf" required>
+            </div>
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                <input type="text" id="campo_endereco" name="endereco" required>
+            </div>
+            <div class="form-group">
+                <label for="matricula">Matrícula</label>
+                <input type="text" id="campo_matricula" name="matricula" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="campo_email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="login">Login</label>
+                <input type="text" id="campo_login_cadastro" name="login" required>
+            </div>
+                <!-- <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="campo_senha_cadastro" name="senha" required>
+                </div> -->
+
+            <div class="form-group">
+                <label for="funcao">Função</label>
+                <select id="campo_funcao" name="funcao" required>
+                    <option value="Operador">Operdor</option>
+                    <option value="Lider">Líder</option>
+                    <option value="Suporte">Suporte</option>
+                </select>
+            </div>
+
+            <div class=form-group>
+                <label for="permissoes">Permissões</label>
+            </div>
+
+            <div>
+                <input  id="cb_reset_senha" type="checkbox" name="reset_senha">
+                Reset de Senha
+                <!-- <input id=cb_pode_cadastrar" type="checkbox" name="pode_cadastrar">
+                Pode cadastrar -->
+            </div>
+
+            <div>
+                <!-- <button class="btAcao" type="button" onclick="cadastra_usuario()">Cadastrar</button> -->
+                <!-- <button type="submit" onclick="cadastra_usuario(); return false">Cadastrar</button> -->
+                <button class="btAcao" onclick="cadastra_usuario()"> Cadastrar </button>
+                <button class="btAcao" onclick="altera_cadastro_usuario()"> Alterar </button>
+            </div>
+            <!-- </form> -->
+        </div>
+
+        <hr id="divisaTabelas" style="display: none">
+
+        <form class="table-wrapper formulario_right"  id="lista_logins" style="display: none" style="max-width:30%">
+            <h2 class="form-group" id="tit_lista_funcionarios" style="align-items: center">
+                Funcionários cadastrados
+            </h2>
+
+            <table id="tabela_lista_usuarios" style="justify-content: center">
+                <tr>
+                    <th class="titulo">Login</th>
+                    <th class="titulo">Matrícula</th>
+                    <th class="titulo"><img src="./img/excluir.png" width="20px"></th>
+                    <th class="titulo"><img src="./img/carregar.png" width="20px"></th>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+
+</html>
