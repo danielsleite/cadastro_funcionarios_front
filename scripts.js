@@ -380,7 +380,7 @@ const valida_cadastro = () => {
 
   const formData = new FormData();
 
-  if (nome === '' || cpf == '' || endereco === '' || matricula === ' ' || email === '' || funcao === '' || login === '') {
+  if (nome === '' || cpf === '' || endereco === '' || matricula === ' ' || email === '' || funcao === '' || login === '') {
     alert("Não pode haver campos em branco, para realizar o cadastro");
   } else if (isNaN(matricula)) {
     alert("O campo matrícula de ver um número");
