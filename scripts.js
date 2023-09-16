@@ -287,7 +287,7 @@ const login_post = (login, senha) => {
   formData.append('login', login);
   formData.append('senha', senha);
 
-  let url = 'http://127.0.0.1:5000/login';
+  let url = 'http://127.0.0.1:5000/login_validacao';
   fetch(url, {
     method: 'post',
     body: formData
@@ -355,7 +355,7 @@ const cadastra_usuario = () => {
       })
       .catch((error) => {
         alert(error("mesage"))
-        console.error('Error:', error); 
+        console.error('Error:', error);
       });
   }
 }
@@ -459,7 +459,7 @@ const altera_senha = () => {
     formData.append("senha", senha_a)
     formData.append("alterar_senha", false)
 
-    let url = 'http://127.0.0.1:5000/senha';
+    let url = 'http://127.0.0.1:5000/login_senha';
     fetch(url, {
       method: 'put',
       body: formData,
@@ -476,4 +476,124 @@ const altera_senha = () => {
       });
 
   }
+}
+
+/*
+--------------------------------------------------------------------------------------
+Função para buscar endereco, baseado no CEP
+--------------------------------------------------------------------------------------
+*/
+
+
+const busca_cep = () => {
+
+  let cep = document.getElementById("campo_cep_cadastro").value;
+
+  if (cep === '') {
+    alert("Campo CEP nao podem estar em branco");
+  } else {
+    cep_get(cep)
+    // alert("Item adicionado!")
+  }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para buscar o endereço a partir do valor do cep
+  --------------------------------------------------------------------------------------
+*/
+const cep_get = (cep) => {
+
+  let url = 'http://127.0.0.1:5001/pessoa_cep?cep=' + cep;
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.rua != null) {
+        preenche_endereco(data);
+        alert("Encontrado endereco para o CEP: " + cep);
+      } else {
+        alert("Não foi encontrado endereço para o CEP informado. Verifique o formado ta b buca: XXXXX-XXX");
+      }
+      console.log(`CEP encontrado: ${cep}`);
+    })
+    .catch((error) => {
+      alert("Falha ao localizar o CEP: " + cep);
+      console.error('Error:', error);
+      alert('Error:', error);
+    });
+}
+
+
+/*
+  Função para preencher endereço no form
+*/
+const preenche_endereco = (data) => {
+  document.getElementById("campo_rua_cadastro").value = data.rua;
+  document.getElementById("campo_cidade_cadastro").value = data.cidade;
+  document.getElementById("campo_bairro_cadastro").value = data.bairro;
+  document.getElementById("campo_estado_cadastro").value = data.estado;
+}
+
+
+
+/*
+--------------------------------------------------------------------------------------
+Função para buscar dados pessoais do usuário, baseado no CPF
+--------------------------------------------------------------------------------------
+*/
+
+
+const busca_cpf = () => {
+
+  let cpf = document.getElementById("campo_cpf").value;
+
+  if (cpf === '') {
+    alert("Campo CPF nao podem estar em branco");
+  } else {
+    cpf_get(cpf)
+    // alert("Item adicionado!")
+  }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+Rota para buscar o dados pessoais a partir do valor do cpf
+  --------------------------------------------------------------------------------------
+*/
+const cpf_get = (cpf) => {
+
+  let url = 'http://127.0.0.1:5001/pessoa?cpf=' + cpf;
+  fetch(url, {
+    method: 'get',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.nome != null) {
+        prenche_dados_pessoais(data);
+        alert("Encontrado cadastro para o CPF: " + cpf);
+        console.log(`CPF encontrado: ${cpf}`);
+      } else {
+        alert("Falha ao localizar o cpf: " + cpf);
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert("Erro ao executar a busca:", error);
+    });
+}
+
+/*
+  Preenche as informações correspondentes ao banco dos dados pessoais na ficha de cadastro
+*/
+
+const prenche_dados_pessoais = (data) => {
+
+  document.getElementById("campo_nome").value = data.nome;
+  document.getElementById("campo_cep_cadastro").value = data.cep;
+  document.getElementById("campo_rua_cadastro").value = data.rua;
+  document.getElementById("campo_bairro_cadastro").value = data.bairro;
+  document.getElementById("campo_cidade_cadastro").value = data.cidade;
+  document.getElementById("campo_estado_cadastro").value = data.estado;
+
 }
