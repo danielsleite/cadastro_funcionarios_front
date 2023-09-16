@@ -67,6 +67,37 @@
                 <label for="login">Login</label>
                 <input type="text" id="campo_login_cadastro" name="login" required>
             </div>
+            <div class="form-group">
+                <label for="end_cep">CEP</label>
+                <input type="text" id="campo_cep_cadastro" name="cep" required>
+            </div>
+            <div class="form-group">
+                <label for="end_rua">Rua</label>
+                <input type="text" id="campo_rua_cadastro" name="rua" required>
+            </div>
+            <div class="form-group">
+
+                <div>
+                    <label for="end_cidade">Estado</label>
+                    <input type="text" id="campo_cidade_cadastro" name="cidade" required>
+                </div>
+                
+                <div>
+
+                    <label for="end_rua">Cidade</label>
+                    <input type="text" id="campo_estado_cadastro" name="estado" required>
+                </div>
+
+                <div>
+
+                    <label for="end_bairo">Bairro</label>
+                    <input type="text" id="campo_bairro_cadastro" name="bairro" required>
+                </div>
+                
+
+            
+            </div>
+
                 <!-- <div class="form-group">
                     <label for="senha">Senha</label>
                     <input type="password" id="campo_senha_cadastro" name="senha" required>
@@ -97,6 +128,8 @@
                 <!-- <button type="submit" onclick="cadastra_usuario(); return false">Cadastrar</button> -->
                 <button class="btAcao" onclick="cadastra_usuario()"> Cadastrar </button>
                 <button class="btAcao" onclick="altera_cadastro_usuario()"> Alterar </button>
+                <button class="btAcao" onclick="busca_cep()"> Busca CEP </button>
+                <button class="btAcao" onclick="busca_cpf()"> CPF </button>
             </div>
             <!-- </form> -->
         </div>
