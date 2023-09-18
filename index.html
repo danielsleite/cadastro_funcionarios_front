@@ -14,7 +14,7 @@
 <body>
     <!-- Cabeçalho de informações do sistema -->
     <header>
-        <div class="title"  style="padding-top: 0.5% display">
+        <div class="title" style="padding-top: 0.5% display">
             <h2>Sistema XPTO: Empresa X</h2>
         </div>
 
@@ -22,7 +22,6 @@
             <div style="padding-top: 0.5%">
                 <input type="text" id="campo_login" placeholder="login" required>
                 <input type="password" id="campo_senha" placeholder="senha" required>
-                <!-- <button type="submit" onclick=realizaLogin() class="addBtn">Login</button> -->
                 <button onclick="realiza_login()" class="addBtn">Login</button>
                 <button id="btlogout" style="display: none" onclick="realiza_logout()" class="addBtn">Logout</button>
             </div>
@@ -33,13 +32,13 @@
             </div>
         </div>
     </header>
-    <div  style="display: none" id="titCentral" >
-        <h1 style="padding-top: 2%" >Cadastro de Funcionário</h1>
+    <div style="display: none" id="titCentral">
+        <h1 style="padding-top: 2%">Cadastro de Funcionário</h1>
     </div>
 
     <div class="container">
-        <div class="formulario_left" id="ficha"  style="display: none">
-            <!-- <form class="formulario" id="ficha" style="display: none;"> -->
+        <div class="formulario_left" id="ficha" style="display: none">
+
             <h2 class="form-group">
                 Ficha de cadastro
             </h2>
@@ -51,10 +50,7 @@
                 <label for="cpf">CPF</label>
                 <input type="text" id="campo_cpf" name="cpf" required>
             </div>
-            <div class="form-group">
-                <label for="endereco">Endereço</label>
-                <input type="text" id="campo_endereco" name="endereco" required>
-            </div>
+
             <div class="form-group">
                 <label for="matricula">Matrícula</label>
                 <input type="text" id="campo_matricula" name="matricula" required>
@@ -81,7 +77,7 @@
                     <label for="end_cidade">Estado</label>
                     <input type="text" id="campo_cidade_cadastro" name="cidade" required>
                 </div>
-                
+
                 <div>
 
                     <label for="end_rua">Cidade</label>
@@ -93,16 +89,7 @@
                     <label for="end_bairo">Bairro</label>
                     <input type="text" id="campo_bairro_cadastro" name="bairro" required>
                 </div>
-                
-
-            
             </div>
-
-                <!-- <div class="form-group">
-                    <label for="senha">Senha</label>
-                    <input type="password" id="campo_senha_cadastro" name="senha" required>
-                </div> -->
-
             <div class="form-group">
                 <label for="funcao">Função</label>
                 <select id="campo_funcao" name="funcao" required>
@@ -111,11 +98,6 @@
                     <option value="Suporte">Suporte</option>
                 </select>
             </div>
-
-            <div class=form-group>
-                <label for="permissoes">Permissões</label>
-            </div>
-
             <div>
                 <input  id="cb_reset_senha" type="checkbox" name="reset_senha">
                 Reset de Senha
@@ -129,14 +111,15 @@
                 <button class="btAcao" onclick="cadastra_usuario()"> Cadastrar </button>
                 <button class="btAcao" onclick="altera_cadastro_usuario()"> Alterar </button>
                 <button class="btAcao" onclick="busca_cep()"> Busca CEP </button>
-                <button class="btAcao" onclick="busca_cpf()"> CPF </button>
+                <button class="btAcao" onclick="busca_cpf()"> Busca CPF </button>
+                <button class="btAcao" onclick="reset_senha()"> Reset senha </button>
             </div>
-            <!-- </form> -->
+
         </div>
 
         <hr id="divisaTabelas" style="display: none">
 
-        <form class="table-wrapper formulario_right"  id="lista_logins" style="display: none" style="max-width:30%">
+        <form class="table-wrapper formulario_right" id="lista_logins" style="display: none" style="max-width:30%">
             <h2 class="form-group" id="tit_lista_funcionarios" style="align-items: center">
                 Funcionários cadastrados
             </h2>

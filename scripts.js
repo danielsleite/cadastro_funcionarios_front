@@ -5,14 +5,14 @@
 */
 const getList = () => {
 
-  let url = 'http://127.0.0.1:5000/funcionarios';
+  let url = 'http://127.0.0.1:5002/funcionarios';
   fetch(url, {
     method: 'get',
   })
     .then((response) => response.json())
     .then((data) => {
       clear_lista_tela()
-      data.funcionarios.forEach(item => insertList(item.login, item.matricula))
+      data.funcionarios.forEach(item => insertList(item.login, item.matricula, item.cpf))
       document.getElementById("tit_lista_funcionarios").textContent = "Funcionarios cadastrados # " + data.funcionarios.length;
     })
     .catch((error) => {
@@ -20,28 +20,6 @@ const getList = () => {
     });
 }
 
-
-/*
-  --------------------------------------------------------------------------------------
-  Função para colocar um item na lista do servidor via requisiÃ§Ã£o POST
-  --------------------------------------------------------------------------------------
-*/
-const postItem = (inputProduct, inputQuantity, inputPrice) => {
-  const formData = new FormData();
-  formData.append('nome', inputProduct);
-  formData.append('quantidade', inputQuantity);
-  formData.append('valor', inputPrice);
-
-  let url = 'http://127.0.0.1:5000/produto';
-  fetch(url, {
-    method: 'post',
-    body: formData
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-}
 
 
 /*
@@ -116,7 +94,7 @@ const loadElement = () => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para preencher a tabela
+  Função para preencher a a ficha completa do funcionario
   --------------------------------------------------------------------------------------
 */
 const prencheFicha = (login) => {
@@ -124,7 +102,7 @@ const prencheFicha = (login) => {
   const formData = new FormData();
   formData.append('login', login);
 
-  let url = 'http://127.0.0.1:5000/ficha';
+  let url = 'http://127.0.0.1:5002/ficha_completa';
   fetch(url, {
     method: 'post',
     body: formData
@@ -134,12 +112,16 @@ const prencheFicha = (login) => {
 
       document.getElementById("campo_nome").value = data.nome;
       document.getElementById("campo_cpf").value = data.cpf;
-      document.getElementById("campo_endereco").value = data.endereco;
+      document.getElementById("campo_cep_cadastro").value = data.cep;
+      document.getElementById("campo_rua_cadastro").value = data.rua;
+      document.getElementById("campo_bairro_cadastro").value = data.bairro;
+      document.getElementById("campo_cidade_cadastro").value = data.cidade;
+      document.getElementById("campo_estado_cadastro").value = data.estado;
       document.getElementById("campo_matricula").value = data.matricula;
       document.getElementById("campo_email").value = data.email;
       document.getElementById("campo_login_cadastro").value = data.login;
       document.getElementById("campo_funcao").value = data.funcao;
-      document.getElementById("cb_reset_senha").checked = data.alterar_senha;
+      document.getElementById("cb_reset_senha").checked = Boolean(data.alterar_senha);
 
     })
     .catch((error) => {
@@ -153,9 +135,9 @@ const prencheFicha = (login) => {
   Função para alterar dados do usuario, baseado no login do mesmo
   --------------------------------------------------------------------------------------
 */
-const altera_cadastro_usuario = () => {
 
-  const formData = valida_cadastro();
+const altera_cadastro_pessoa = () => {
+  const formData = valida_cadastro_pessoa();
 
   var tamanho = 0
   for (var value of formData.values()) {
@@ -165,7 +147,7 @@ const altera_cadastro_usuario = () => {
 
   if (tamanho > 0) {
 
-    let url = 'http://127.0.0.1:5000/atualiza';
+    let url = 'http://127.0.0.1:5001/pessoa_atualiza';
     fetch(url, {
       method: 'put',
       body: formData,
@@ -181,8 +163,67 @@ const altera_cadastro_usuario = () => {
         console.error('Error:', error);
       });
   }
+}
 
 
+/*
+  Atualiza os dados cadastrar dos campos funcionarios da api funcionario
+*/
+
+const altera_cadastro_funcionario = () => {
+
+  const formData = valida_cadastro_funcionario();
+
+  var tamanho = 0
+  for (var value of formData.values()) {
+    tamanho++;
+    break;
+  }
+
+  if (tamanho > 0) {
+
+    let cpf = document.getElementById("campo_cpf").value;
+    let url = 'http://127.0.0.1:5002/atualiza?cpf=' + cpf;
+    fetch(url, {
+      method: 'put',
+      body: formData,
+    })
+      .then((response) => {
+        alert("Atualizações feitas com sucesso do funcionário de cpf: " + cpf);
+        response.json();
+        getList()
+      })
+      .catch((error) => {
+        // alert(error("mesage"))
+        alert("Erro ao tentar atualizar os dados");
+        console.error('Error:', error);
+      });
+  }
+
+}
+
+/*
+  Atualiza dados cadastras da api de cadastro de pessoa e de cadastro de funcionario
+*/
+
+const altera_cadastro_usuario = () => {
+
+  const formData = valida_cadastro();
+
+  var tamanho = 0
+  for (var value of formData.values()) {
+    tamanho++;
+    break;
+  }
+
+  if (tamanho > 0) {
+    altera_cadastro_pessoa();
+    altera_cadastro_funcionario();
+    let alterar_senha = Boolean(document.getElementById("cb_reset_senha").checked);
+    if (alterar_senha){
+      reset_senha()
+    }
+  }
 }
 
 /*
@@ -192,8 +233,17 @@ const altera_cadastro_usuario = () => {
 */
 const deleteItem = (item) => {
   console.log(item)
-  let url = 'http://127.0.0.1:5000/excluir?login=' + item;
+  let url = 'http://127.0.0.1:5002/excluir?login=' + item;
   fetch(url, {
+    method: 'delete'
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+
+  let url_login = 'http://127.0.0.1:5000/login_excluir?login=' + item;
+  fetch(url_login, {
     method: 'delete'
   })
     .then((response) => response.json())
@@ -204,32 +254,11 @@ const deleteItem = (item) => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar um novo item com nome, quantidade e valor 
-  --------------------------------------------------------------------------------------
-*/
-const newItem = () => {
-  let inputProduct = document.getElementById("newInput").value;
-  let inputQuantity = document.getElementById("newQuantity").value;
-  let inputPrice = document.getElementById("newPrice").value;
-
-  if (inputProduct === '') {
-    alert("Escreva o nome de um item!");
-  } else if (isNaN(inputQuantity) || isNaN(inputPrice)) {
-    alert("Quantidade e valor precisam ser nÃºmeros!");
-  } else {
-    // insertList(inputProduct, inputQuantity, inputPrice)
-    postItem(inputProduct, inputQuantity, inputPrice)
-    alert("Item adicionado!")
-  }
-}
-
-/*
-  --------------------------------------------------------------------------------------
   FunÃ§Ã£o para inserir items na lista apresentada
   --------------------------------------------------------------------------------------
 */
-const insertList = (login, matricula) => {
-  var item = [login, matricula]
+const insertList = (login, matricula, cpf) => {
+  var item = [login, matricula, cpf]
   var table = document.getElementById('tabela_lista_usuarios');
   var row = table.insertRow();
 
@@ -316,6 +345,7 @@ const login_post = (login, senha) => {
         document.getElementById("titCentral").style.display = "none";
         document.getElementById("divisaTabelas").style.display = "none";
         document.getElementById("campo_login").style.backgroundColor = "white";
+        alert("Erro ao tentar fazer o login. Verifique campos login e senha")
       }
       console.log(`Logado: ${logado}`);
     })
@@ -323,6 +353,224 @@ const login_post = (login, senha) => {
       alert("Falha ao realizar login");
       console.error('Error:', error);
     });
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para enviar dados para novo login
+  --------------------------------------------------------------------------------------
+*/
+const cadastra_login = () => {
+
+  const formData = valida_cadastro_login();
+  var tamanho = 0
+  for (var value of formData.values()) {
+    tamanho++;
+    break;
+  }
+
+  if (tamanho > 0) {
+
+    alert("Verifique a atualização da lista de funcionários para confirmar operação")
+
+    let url = 'http://127.0.0.1:5000/login_cadastro';
+    fetch(url, {
+      method: 'post',
+      body: formData
+    })
+      .then((response) => {
+        response.json()
+        getList()
+
+      })
+      .catch((error) => {
+        // alert(error("mesage"))
+        console.error('Error:', error);
+      });
+  }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para validar ficha de cadastro de login
+  --------------------------------------------------------------------------------------
+*/
+
+const valida_cadastro_login = () => {
+
+  let email = document.getElementById("campo_email").value;
+  let login = document.getElementById("campo_login_cadastro").value;
+  let cadastrado_por = document.getElementById("campo_login").value;
+  let alterar_senha = "True";
+
+  const formData = new FormData();
+
+  if (email === '' || login === '' || cadastrado_por === '') {
+    alert("Não pode haver campos em branco, para realizar o cadastro");
+  } else {
+
+    formData.append('email', email);
+    formData.append('login', login);
+    formData.append('cadastrado_por', cadastrado_por);
+    formData.append('alterar_senha', alterar_senha);
+  }
+  return formData;
+}
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para enviar dados para novo cadastro POST
+  --------------------------------------------------------------------------------------
+*/
+const cadastra_pessoa = () => {
+
+  const formData = valida_cadastro();
+  var tamanho = 0
+  for (var value of formData.values()) {
+    tamanho++;
+    break;
+  }
+
+  if (tamanho > 0) {
+
+    alert("Verifique a atualização da lista de funcionários para confirmar operação")
+
+    let url = 'http://127.0.0.1:5001/pessoa';
+    fetch(url, {
+      method: 'post',
+      body: formData
+    })
+      .then((response) => {
+        response.json()
+        getList()
+
+      })
+      .catch((error) => {
+        // alert(error("mesage"))
+        console.error('Error:', error);
+      });
+  }
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para validar ficha de cadastro completo
+  --------------------------------------------------------------------------------------
+*/
+
+const valida_cadastro_pessoa = () => {
+
+
+  let nome = document.getElementById("campo_nome").value;
+  let cpf = document.getElementById("campo_cpf").value;
+  let cep = document.getElementById("campo_cep_cadastro").value;
+  let rua = document.getElementById("campo_rua_cadastro").value;
+  let bairro = document.getElementById("campo_bairro_cadastro").value;
+  let cidade = document.getElementById("campo_cidade_cadastro").value;
+  let estado = document.getElementById("campo_estado_cadastro").value;
+
+  const formData = new FormData();
+
+  if (nome === '' || cpf === '' || rua === '' || bairro === '' || cidade === '' || estado === '') {
+    alert("Não pode haver campos em branco, para realizar o cadastro");
+  } else {
+
+    formData.append('nome', nome);
+    formData.append('cpf', cpf);
+    formData.append('cep', cep);
+    formData.append('rua', rua);
+    formData.append('cidade', cidade);
+    formData.append('bairro', bairro);
+    formData.append('estado', estado);
+  }
+  return formData;
+}
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para enviar dados para novo cadastro POST basico funcionario
+  --------------------------------------------------------------------------------------
+*/
+const cadastra_funcionario = () => {
+
+  const formData = valida_cadastro_funcionario();
+  var tamanho = 0
+  for (var value of formData.values()) {
+    tamanho++;
+    break;
+  }
+
+  if (tamanho > 0) {
+
+    alert("Verifique a atualização da lista de funcionários para confirmar operação")
+
+    let url = 'http://127.0.0.1:5002/funcionario';
+    fetch(url, {
+      method: 'post',
+      body: formData
+    })
+      .then((response) => {
+        response.json()
+        getList()
+
+      })
+      .catch((error) => {
+        // alert(error("mesage"))
+        console.error('Error:', error);
+      });
+  }
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para validar ficha de cadastro funcionario
+  --------------------------------------------------------------------------------------
+*/
+
+const valida_cadastro_funcionario = () => {
+
+
+  let nome = document.getElementById("campo_nome").value;
+  let cpf = document.getElementById("campo_cpf").value;
+  let matricula = document.getElementById("campo_matricula").value;
+  let email = document.getElementById("campo_email").value;
+  let login = document.getElementById("campo_login_cadastro").value;
+  let funcao = document.getElementById("campo_funcao").value;
+
+
+  const formData = new FormData();
+
+  if (nome === '' || cpf === '' || matricula === ' ' || email === '' || funcao === '' || login === '') {
+    alert("Não pode haver campos em branco, para realizar o cadastro");
+  } else if (isNaN(matricula)) {
+    alert("O campo matrícula de ver um número");
+  } else {
+
+    formData.append('nome', nome);
+    formData.append('cpf', cpf);
+    formData.append('funcao', funcao);
+    formData.append('matricula', matricula);
+    formData.append('email', email);
+    formData.append('login', login);
+  }
+  return formData;
+}
+
+
+/*
+    Concatena as trez rotas de cadastro para realizar o castro nas tres diferentes apis
+
+*/
+
+const cadastra_usuario_completo = () => {
+
+  cadastra_login();
+  cadastra_funcionario();
+  cadastra_pessoa();
+
 }
 
 /*
@@ -343,7 +591,7 @@ const cadastra_usuario = () => {
 
     alert("Verifique a atualização da lista de funcionários para confirmar operação")
 
-    let url = 'http://127.0.0.1:5000/funcionario';
+    let url = 'http://127.0.0.1:5002/funcionario';
     fetch(url, {
       method: 'post',
       body: formData
@@ -354,14 +602,16 @@ const cadastra_usuario = () => {
 
       })
       .catch((error) => {
-        alert(error("mesage"))
+        // alert(error("mesage"))
         console.error('Error:', error);
       });
   }
 }
+
+
 /*
   --------------------------------------------------------------------------------------
-Funcao para cadastrar novo usuario no banco
+Funcao para validar ficha de cadastro completo
   --------------------------------------------------------------------------------------
 */
 
@@ -370,7 +620,11 @@ const valida_cadastro = () => {
 
   let nome = document.getElementById("campo_nome").value;
   let cpf = document.getElementById("campo_cpf").value;
-  let endereco = document.getElementById("campo_endereco").value;
+  let cep = document.getElementById("campo_cep_cadastro").value;
+  let rua = document.getElementById("campo_rua_cadastro").value;
+  let bairro = document.getElementById("campo_bairro_cadastro").value;
+  let cidade = document.getElementById("campo_cidade_cadastro").value;
+  let estado = document.getElementById("campo_estado_cadastro").value;
   let matricula = document.getElementById("campo_matricula").value;
   let email = document.getElementById("campo_email").value;
   let login = document.getElementById("campo_login_cadastro").value;
@@ -380,7 +634,7 @@ const valida_cadastro = () => {
 
   const formData = new FormData();
 
-  if (nome === '' || cpf === '' || endereco === '' || matricula === ' ' || email === '' || funcao === '' || login === '') {
+  if (nome === '' || cpf === '' || cep === '' || matricula === ' ' || email === '' || funcao === '' || login === '' || rua === '' || bairro === '' || cidade === '' || estado === '') {
     alert("Não pode haver campos em branco, para realizar o cadastro");
   } else if (isNaN(matricula)) {
     alert("O campo matrícula de ver um número");
@@ -388,13 +642,17 @@ const valida_cadastro = () => {
 
     formData.append('nome', nome);
     formData.append('cpf', cpf);
-    formData.append('endereco', endereco);
+    formData.append('cep', cep);
+    formData.append('rua', rua);
+    formData.append('cidade', cidade);
+    formData.append('bairro', bairro);
+    formData.append('estado', estado);
     formData.append('funcao', funcao);
     formData.append('matricula', matricula);
     formData.append('email', email);
     formData.append('login', login);
     formData.append('cadastrado_por', cadastrado_por);
-    formData.append('alterar_senha', alterar_senha);
+    formData.append('alterar_senha', Boolean(alterar_senha));
   }
   return formData;
 }
@@ -418,7 +676,7 @@ const clear_lista_tela = () => {
   }
 
   //Adiciona a linha de titulo na tabela zerada
-  insertList("Login", "Matricula")
+  insertList("Login", "Matricula", "CPF")
 
   // Obtém a referência para a primeira linha da tabela
   const firstRow = table.rows[0];
@@ -471,11 +729,44 @@ const altera_senha = () => {
       })
       .catch((error) => {
         alert(error("mesage"))
-        // alert("Erro ao tentar atualizar os dados");
+        alert("Erro ao tentar atualizar os dados");
         console.error('Error:', error);
       });
 
   }
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+Funcao para reset de senha do usuario
+  --------------------------------------------------------------------------------------
+*/
+
+const reset_senha = () => {
+
+  let login = document.getElementById("campo_login_cadastro").value
+
+  const formData = new FormData();
+  formData.append("login", login)
+  formData.append("senha", "123456")
+  formData.append("alterar_senha", true)
+
+  let url = 'http://127.0.0.1:5000/login_senha';
+  fetch(url, {
+    method: 'put',
+    body: formData,
+  })
+    .then((response) => {
+      response.json()
+      alert("Senha resetada com sucesso! login: " + login);
+    })
+    .catch((error) => {
+      alert(error("mesage"))
+      alert("Erro ao tentar atualizar os dados");
+      console.error('Error:', error);
+    });
+
 }
 
 /*
@@ -535,8 +826,6 @@ const preenche_endereco = (data) => {
   document.getElementById("campo_estado_cadastro").value = data.estado;
 }
 
-
-
 /*
 --------------------------------------------------------------------------------------
 Função para buscar dados pessoais do usuário, baseado no CPF
@@ -573,6 +862,7 @@ const cpf_get = (cpf) => {
         prenche_dados_pessoais(data);
         alert("Encontrado cadastro para o CPF: " + cpf);
         console.log(`CPF encontrado: ${cpf}`);
+
       } else {
         alert("Falha ao localizar o cpf: " + cpf);
       }
