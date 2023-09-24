@@ -220,7 +220,7 @@ const altera_cadastro_usuario = () => {
     altera_cadastro_pessoa();
     altera_cadastro_funcionario();
     let alterar_senha = Boolean(document.getElementById("cb_reset_senha").checked);
-    if (alterar_senha){
+    if (alterar_senha) {
       reset_senha()
     }
   }
@@ -385,7 +385,7 @@ const cadastra_login = () => {
 
       })
       .catch((error) => {
-        // alert(error("mesage"))
+        alert(error("mesage"))
         console.error('Error:', error);
       });
   }
@@ -447,7 +447,7 @@ const cadastra_pessoa = () => {
 
       })
       .catch((error) => {
-        // alert(error("mesage"))
+        alert(error("mesage"))
         console.error('Error:', error);
       });
   }
@@ -517,7 +517,7 @@ const cadastra_funcionario = () => {
 
       })
       .catch((error) => {
-        // alert(error("mesage"))
+        alert(error("mesage"))
         console.error('Error:', error);
       });
   }
@@ -602,7 +602,7 @@ const cadastra_usuario = () => {
 
       })
       .catch((error) => {
-        // alert(error("mesage"))
+        alert(error("mesage"))
         console.error('Error:', error);
       });
   }
